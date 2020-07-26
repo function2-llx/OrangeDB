@@ -146,6 +146,7 @@ private:
                 f_data->read_bytes(rid * size, bytes, size);
                 ret.push_back(restore(bytes));
             }
+            delete[] bytes;
             return ret;
         }
 
