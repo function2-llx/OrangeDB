@@ -16,7 +16,7 @@ using namespace Orange;
 static char buffer[1048576];
 
 // 服务端自带多线程，所以这里可能要处理一下
-API const char* exec(const char* sql) {
+API const char* exec(const char* sql, int user_id) {
     parser::sql_parser sql_parser;
 
     parser::sql_ast ast;
@@ -28,7 +28,7 @@ API const char* exec(const char* sql) {
         return buffer;
     }
 
-    auto results = program(ast);
+    auto results = program(ast, user_id);
 
     using namespace rapidjson;
     Document d(kArrayType);

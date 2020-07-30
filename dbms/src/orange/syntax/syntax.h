@@ -20,5 +20,5 @@ namespace Orange {
     };
 
     // 语义分析入口
-    std::vector<result_t> program(Orange::parser::sql_ast& ast) noexcept;
+    std::vector<result_t> program(Orange::parser::sql_ast& ast, int user_id) noexcept;
 }  // namespace Orange

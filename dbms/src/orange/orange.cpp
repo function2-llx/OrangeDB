@@ -3,11 +3,12 @@
 #include "exceptions.h"
 
 #include <unordered_set>
+#include <map>
 
 // database names cache
 static std::unordered_set<String> names;
 // current using database name, empty if not using any
-static String cur;
+static std::map<int, String> cur;
 const fs::path DB_ROOT;
 
 
@@ -24,36 +25,38 @@ namespace Orange {
     bool drop(const String& name) {
         orange_check(exists(name), Exception::database_not_exist(name));
         names.erase(name);
-        if (name == cur) {
+        if (name == cur[cur_user_id]) {
             unuse();
         }
         return fs::remove_all(DB_ROOT / fs::path(name));
     }
 
     bool use(const String& name) {
-        if (name == cur) return true;
+        if (name == cur[cur_user_id]) return true;
         unuse();
         orange_check(exists(name), Exception::database_not_exist(name));
-        cur = name;
+        cur[cur_user_id] = name;
         return true;
     }
 
     bool unuse() {
         if (using_db()) {
             SavedTable::close_all();
-            cur = "";
+//            cur.erase(cur.find(cur_user_id));
+            cur.erase(cur_user_id);
         }
         return true;
     }
 
-    bool using_db() { return !cur.empty(); }
+    // FIXME: memory leak here
+    bool using_db() { return !cur[cur_user_id].empty(); }
 
     std::vector<String> all() { return { names.begin(), names.end() }; }
 
     std::vector<String> all_tables() {
         orange_check(using_db(), Exception::no_database_used());
         std::vector<String> data;
-        for (const auto& it : fs::directory_iterator(DB_ROOT / fs::path(cur))) {
+        for (const auto& it : fs::directory_iterator(DB_ROOT / fs::path(cur[cur_user_id]))) {
             if (it.is_directory()) data.push_back(it.path().filename().string());
         }
         return data;
@@ -61,7 +64,7 @@ namespace Orange {
 
     fs::path cur_db_path() {
         orange_assert(using_db(), "not using any database but require a current database path");
-        return DB_ROOT / fs::path(cur);
+        return DB_ROOT / fs::path(cur[cur_user_id]);
     }
 
     // must call once at first (in both CLI and server backend)
@@ -80,5 +83,12 @@ namespace Orange {
         auto tmp = names;
         for (const auto& db_name : tmp) drop(db_name);
         fs::remove_all(DB_ROOT);
+    }
+
+    void cur_db_restore(int user_id) {
+        cur_user_id = user_id;
+        if (cur.find(cur_user_id) != cur.end()) {
+            use(cur[cur_user_id]);
+        }
     }
 }  // namespace Orange

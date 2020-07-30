@@ -21,6 +21,8 @@
 #include "orange/table/table_base.h"
 #include "utils/id_pool.h"
 
+extern int cur_user_id;
+
 // 数据库中的表
 class SavedTable : public Table {
 private:

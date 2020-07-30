@@ -5,7 +5,7 @@ import (
 )
 
 // #cgo LDFLAGS: -L ../dbms/lib -ldbms
-// extern const char* exec(const char* sql);
+// extern const char* exec(const char* sql, int user_id);
 // extern const char* info();
 // extern void setup();
 import "C"
@@ -21,9 +21,9 @@ type ExecResult struct {
 }
 
 // Exec : 调用 exec 函数，执行 SQL 语句
-func Exec(sql string) ExecResult {
+func Exec(sql string, sessionId int) ExecResult {
 	startTime := time.Now()
-	result := C.GoString(C.exec(C.CString(sql)))
+	result := C.GoString(C.exec(C.CString(sql), C.int(sessionId)))
 	elapsed := time.Since(startTime)
 	return ExecResult{Time: elapsed.Seconds(), Results: result}
 }

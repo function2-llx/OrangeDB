@@ -502,10 +502,12 @@ namespace Orange {
 
     // 遍历语法树
     // 不抛异常
-    std::vector<result_t> program(sql_ast& ast) noexcept {
+    std::vector<result_t> program(sql_ast& ast, int user_id) noexcept {
         std::vector<result_t> ret;
         std::stringstream tmp;  // new 一对象
         //ss_debug.swap(tmp);
+        cur_user_id = user_id;
+        Orange::cur_db_restore(user_id);
         for (auto& stmt : ast.stmt_list) {
             //ss_debug.clear();
             ret.push_back(Orange::stmt(stmt));

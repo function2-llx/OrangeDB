@@ -8,8 +8,11 @@
 // root of database files
 
 namespace Orange {
+    static int cur_user_id;
+
     void setup();
     void paolu();
+    void cur_db_restore(int user_id);
     bool exists(const String& name);
     bool create(const String& name);
     bool drop(const String& name);

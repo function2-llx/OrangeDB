@@ -3,8 +3,10 @@ module server
 go 1.13
 
 require (
+	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
 	github.com/json-iterator/go v1.1.8 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect

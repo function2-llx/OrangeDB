@@ -8,6 +8,8 @@
 
 class TmpTable;
 
+extern int cur_user_id;
+
 class Table {
 private:
     // 慢是慢了点，不过用暴力的话已经在内存里了，真慢了再说
